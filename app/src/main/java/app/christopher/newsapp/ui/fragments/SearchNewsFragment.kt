@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.View
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -40,7 +39,7 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
         }
 
 
-        //Insert a time delay between when text changes and producing results.
+        //Insert a time delay between when text changes and displaying results.
         var job : Job? = null
         etSearch.addTextChangedListener { editable ->
             job?.cancel()
@@ -53,7 +52,7 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
         }
 
         //So here, we are subscribing to all changes that will be made in the LiveData observable
-        viewModel.searchNews.observe(viewLifecycleOwner, Observer { response ->
+        viewModel.searchNews.observe(viewLifecycleOwner, { response ->
             //Depending on the state of the response, we want to handle each differently (success or error)
             when (response) {
                 is Resource.Success -> {
