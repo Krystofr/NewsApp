@@ -20,10 +20,12 @@ class NewsViewModel(
     //LiveData object for Breaking News
     val breakingNews: MutableLiveData<Resource<NewsResponse>> = MutableLiveData()
     var breakingNewsPage = 1
+    var breakingNewsResponse : NewsResponse? = null
 
     //LiveData object for Searching News
     val searchNews: MutableLiveData<Resource<NewsResponse>> = MutableLiveData()
     var searchNewsPage = 1
+    var searchNewsResponse : NewsResponse? = null
 
     init {
         getBreakingNews("uk")
@@ -47,7 +49,19 @@ class NewsViewModel(
     private fun handleBreakingNewsResponse(response: Response<NewsResponse>): Resource<NewsResponse> {
         if (response.isSuccessful) {
             response.body()?.let { resultResponse ->
-                return Resource.Success(resultResponse)
+                //Increase current page number so that we can load the next page after that
+                breakingNewsPage++
+                //Since this is null initially, we want to set it when we get the first response
+                if (breakingNewsResponse == null) {
+                    breakingNewsResponse = resultResponse //resultResponse -> response from our API.
+                } else { //In case it's not the first page
+                    val oldArticles = breakingNewsResponse?.articles
+                    //Because this article List is not a Mutable List, we cannot add old articles to new articles
+                    //So therefore we change the List to a MutableList in NewsResponse.kt
+                    val newArticles = resultResponse.articles
+                    oldArticles?.addAll(newArticles)
+                }
+                return Resource.Success(breakingNewsResponse ?: resultResponse)
             }
         }
         return Resource.Error(response.message())
@@ -56,7 +70,19 @@ class NewsViewModel(
     private fun handleSearchNewsResponse(response: Response<NewsResponse>): Resource<NewsResponse> {
         if (response.isSuccessful) {
             response.body()?.let { resultResponse ->
-                return Resource.Success(resultResponse)
+                //Increase current page number so that we can load the next page after that
+                searchNewsPage++
+                //Since this is null initially, we want to set it when we get the first response
+                if (searchNewsResponse == null) {
+                    searchNewsResponse = resultResponse //resultResponse -> response from our API.
+                } else { //In case it's not the first page
+                    val oldArticles = searchNewsResponse?.articles
+                    //Because this article List is not a Mutable List, we cannot add old articles to new articles
+                    //So therefore we change the List to a MutableList in NewsResponse.kt
+                    val newArticles = resultResponse.articles
+                    oldArticles?.addAll(newArticles)
+                }
+                return Resource.Success(searchNewsResponse ?: resultResponse)
             }
         }
         return Resource.Error(response.message())

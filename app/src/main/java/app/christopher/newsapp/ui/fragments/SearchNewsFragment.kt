@@ -3,18 +3,23 @@ package app.christopher.newsapp.ui.fragments
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.AbsListView
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import app.christopher.newsapp.R
 import app.christopher.newsapp.adapters.NewsAdapter
 import app.christopher.newsapp.ui.NewsActivity
 import app.christopher.newsapp.ui.NewsViewModel
+import app.christopher.newsapp.util.Constants
 import app.christopher.newsapp.util.Constants.Companion.SEARCH_NEWS_TIME_DELAY
 import app.christopher.newsapp.util.Resource
+import kotlinx.android.synthetic.main.fragment_breaking_news.*
 import kotlinx.android.synthetic.main.fragment_search_news.*
+import kotlinx.android.synthetic.main.fragment_search_news.paginationProgressBar
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
@@ -58,7 +63,12 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
                 is Resource.Success -> {
                     hideProgressbar()
                     response.data?.let { newsResponse ->
-                        newsAdapter.differ.submitList(newsResponse.articles)
+                        newsAdapter.differ.submitList(newsResponse.articles.toList()) //The "newsResponse.article" here did not load more items into the list when scrolling. Calling ".toList()" fixed this.
+                        val totalPages = newsResponse.totalResults / Constants.QUERY_PAGE_SIZE + 2 //totalResults is an integer in the JSON that tells us how many results we have in our response.
+                        isLastPage = viewModel.searchNewsPage == totalPages
+                        if (isLastPage) {
+                            rvSearchNews.setPadding(0, 0, 0, 0)
+                        }
                     }
                 }
                 is Resource.Error -> {
@@ -78,9 +88,11 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
 
     private fun hideProgressbar() {
         paginationProgressBar.visibility = View.INVISIBLE
+        isLoading = false
     }
     private fun showProgressbar(){
         paginationProgressBar.visibility = View.VISIBLE
+        isLoading = true
     }
 
     private fun setUpRecyclerView() {
@@ -89,6 +101,47 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
             adapter = newsAdapter
             layoutManager = LinearLayoutManager(activity)
             addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
+            addOnScrollListener(this@SearchNewsFragment.scrollListener)
+        }
+    }
+
+
+    var isLoading = false
+    var isLastPage = false
+    var isScrolling = false
+
+    val scrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            super.onScrollStateChanged(recyclerView, newState)
+            //If we are scrolling
+            if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
+                isScrolling = true
+            }
+        }
+
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            super.onScrolled(recyclerView, dx, dy)
+            //Check when we've scrolled to the bottom or not.
+            val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+            val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+            val visibleItemCount = layoutManager.childCount
+            val totalItemCount = layoutManager.itemCount
+
+            val isNotLoadingAndNotAtLastPage = !isLoading and !isLastPage
+            val isAtLastItem =
+                firstVisibleItemPosition + visibleItemCount >= totalItemCount //Then we know our last item is visible.
+            val isNotAtBeginning =
+                firstVisibleItemPosition >= 0 //Determine if we have scrolled down such that the 1st item is not visible.
+            val isTotalMoreThanVisible =
+                totalItemCount >= Constants.QUERY_PAGE_SIZE //Determine each page of our request is 20 items
+
+            //Now, we set pagination to our recyclerview of items.
+            val shouldPaginate =
+                isNotLoadingAndNotAtLastPage and isAtLastItem and isNotAtBeginning and isTotalMoreThanVisible and isScrolling
+            if (shouldPaginate) {
+                viewModel.searchNews(etSearch.textAlignment.toString())
+                isScrolling = false
+            }
         }
     }
 }
