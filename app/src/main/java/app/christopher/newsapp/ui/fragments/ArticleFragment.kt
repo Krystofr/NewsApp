@@ -26,7 +26,7 @@ class ArticleFragment : Fragment(R.layout.fragment_article) {
         //Display article in the webview
         webView.apply {
             webViewClient = WebViewClient() //Always loads into this webview and not the default browser of the device
-            loadUrl(article.url)
+            article.url?.let { loadUrl(it) }
         }
 
         fab.setOnClickListener {

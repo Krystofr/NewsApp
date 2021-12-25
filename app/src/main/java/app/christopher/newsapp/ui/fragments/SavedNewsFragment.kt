@@ -2,6 +2,7 @@ package app.christopher.newsapp.ui.fragments
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -21,6 +22,10 @@ class SavedNewsFragment : Fragment(R.layout.fragment_saved_news) {
     lateinit var newsAdapter: NewsAdapter
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        savedNewsRL.apply {
+            swipeRL()
+        }
 
         viewModel =
             (activity as NewsActivity).viewModel //Cast to NewsActivity so we have access to the ViewModel created in it by calling ".viewModel"
@@ -72,6 +77,13 @@ class SavedNewsFragment : Fragment(R.layout.fragment_saved_news) {
             //Update our recyclerview after changes have been made
             newsAdapter.differ.submitList(articles)
         })
+    }
+
+    private fun swipeRL() {
+        findNavController().navigate(R.id.action_savedNewsFragment_self)
+        Toast.makeText(activity, "Refreshed", Toast.LENGTH_SHORT).show()
+        activity?.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+        activity?.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     private fun setUpRecyclerView() {

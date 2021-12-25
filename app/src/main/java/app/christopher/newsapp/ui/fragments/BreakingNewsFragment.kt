@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.AbsListView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -15,6 +16,7 @@ import app.christopher.newsapp.ui.NewsActivity
 import app.christopher.newsapp.ui.NewsViewModel
 import app.christopher.newsapp.util.Constants.Companion.QUERY_PAGE_SIZE
 import app.christopher.newsapp.util.Resource
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.android.synthetic.main.fragment_breaking_news.*
 
 private const val TAG = "BreakingNewsFragment"
@@ -25,6 +27,12 @@ class BreakingNewsFragment : Fragment(R.layout.fragment_breaking_news) {
     lateinit var newsAdapter: NewsAdapter
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        breakingNewsRL.apply {
+            setOnRefreshListener {
+                swipeRefreshLayout()
+            }
+        }
 
         viewModel =
             (activity as NewsActivity).viewModel //Cast to NewsActivity so we have access to the ViewModel created in it by calling ".viewModel"
@@ -58,6 +66,16 @@ class BreakingNewsFragment : Fragment(R.layout.fragment_breaking_news) {
                     hideProgressbar()
                     response.message?.let { message ->
                         Log.e(TAG, "An error occurred: $message")
+                        //Toast.makeText(activity, "An error occurred: $message", Toast.LENGTH_SHORT).show()
+                        MaterialAlertDialogBuilder(requireContext())
+                            .setTitle("Well, this is awkward:")
+                            .setMessage(message)
+                            .setPositiveButton("TRY AGAIN") { _, _ ->
+                               swipeRefreshLayout()
+                            }.setNegativeButton("CANCEL") { cancel, _ ->
+                                cancel.dismiss()
+                            }
+                            .show()
                     }
                 }
                 is Resource.Loading -> {
@@ -126,5 +144,12 @@ class BreakingNewsFragment : Fragment(R.layout.fragment_breaking_news) {
                 isScrolling = false
             }
         }
+    }
+
+    private fun swipeRefreshLayout() {
+        findNavController().navigate(R.id.action_breakingNewsFragment_self)
+        Toast.makeText(activity, "Refreshed", Toast.LENGTH_SHORT).show()
+        activity?.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+        activity?.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 }

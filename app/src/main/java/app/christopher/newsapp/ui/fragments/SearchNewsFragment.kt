@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.AbsListView
+import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -17,6 +18,8 @@ import app.christopher.newsapp.ui.NewsViewModel
 import app.christopher.newsapp.util.Constants
 import app.christopher.newsapp.util.Constants.Companion.SEARCH_NEWS_TIME_DELAY
 import app.christopher.newsapp.util.Resource
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_breaking_news.*
 import kotlinx.android.synthetic.main.fragment_search_news.*
 import kotlinx.android.synthetic.main.fragment_search_news.paginationProgressBar
@@ -32,6 +35,12 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
     lateinit var newsAdapter: NewsAdapter
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        searchNewsRL.apply {
+            setOnRefreshListener {
+                refreshLayout()
+            }
+        }
 
         viewModel = (activity as NewsActivity).viewModel //Cast to NewsActivity so we have access to the ViewModel created in it by calling ".viewModel"
         setUpRecyclerView()
@@ -75,6 +84,12 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
                     hideProgressbar()
                     response.message?.let { message ->
                         Log.e(TAG, "An error occurred: $message")
+                        Snackbar.make(view, "Well, this is awkward: $message", Snackbar.LENGTH_LONG).apply {
+                            setAction("TRY AGAIN") {
+                               refreshLayout()
+                            }
+                            show()
+                        }
                     }
                 }
                 is Resource.Loading -> {
@@ -143,5 +158,12 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
                 isScrolling = false
             }
         }
+    }
+
+    private fun refreshLayout() {
+        findNavController().navigate(R.id.action_searchNewsFragment_self)
+        Toast.makeText(activity, "Refreshed", Toast.LENGTH_SHORT).show()
+        activity?.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+        activity?.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 }

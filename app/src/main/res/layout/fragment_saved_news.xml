@@ -4,9 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvSavedNews"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:isScrollContainer="true"
+        android:id="@+id/savedNewsRL">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvSavedNews"
+            android:layout_width="match_parent"
+            android:layoutAnimation="@anim/layout_animation"
+            android:layout_height="match_parent" />
 
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </FrameLayout>

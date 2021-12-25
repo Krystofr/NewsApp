@@ -17,17 +17,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvSearchNews"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:paddingBottom="50dp"
-        android:layoutAnimation="@anim/layout_animation"
-        android:clipToPadding="false"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etSearch"
-        tools:layout_editor_absoluteX="0dp" />
+        android:layout_height="match_parent"
+        android:isScrollContainer="true"
+        android:id="@+id/searchNewsRL">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvSearchNews"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:paddingBottom="50dp"
+            android:layoutAnimation="@anim/layout_animation"
+            android:clipToPadding="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/etSearch"
+            tools:layout_editor_absoluteX="0dp" />
 
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     <ProgressBar
         android:id="@+id/paginationProgressBar"
         style="?attr/progressBarStyle"
