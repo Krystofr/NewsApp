@@ -11,6 +11,7 @@
 - Jetpack Navigation Component
 - MVVM
 - BottomNavigation
+- API from: newsapi.org
 
 ## About
 
