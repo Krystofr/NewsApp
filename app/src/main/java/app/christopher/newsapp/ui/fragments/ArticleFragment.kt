@@ -1,37 +1,77 @@
 package app.christopher.newsapp.ui.fragments
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.webkit.WebViewClient
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import app.christopher.newsapp.R
+import app.christopher.newsapp.databinding.FragmentArticleBinding
 import app.christopher.newsapp.ui.NewsActivity
-import app.christopher.newsapp.ui.NewsViewModel
+import app.christopher.newsapp.viewmodel.NewsViewModel
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.fragment_article.*
 
 class ArticleFragment : Fragment(R.layout.fragment_article) {
 
-    lateinit var viewModel: NewsViewModel
+    private var viewModel: NewsViewModel? = null
+    private val args: ArticleFragmentArgs by navArgs()
+    private lateinit var binding: FragmentArticleBinding
 
-    val args: ArticleFragmentArgs by navArgs()
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentArticleBinding.inflate(layoutInflater, container, false)
+        return binding.root
+    }
+    @SuppressLint("SetJavaScriptEnabled")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = (activity as NewsActivity).viewModel //Cast to NewsActivity so we have access to the ViewModel created in it by calling ".viewModel"
+        viewModel =
+            (activity as NewsActivity).viewModel
 
-        //Get current article
         val article = args.article
-        //Display article in the webview
-        webView.apply {
-            webViewClient = WebViewClient() //Always loads into this webview and not the default browser of the device
-            article.url?.let { loadUrl(it) }
+        binding.apply {
+
+            webView.webViewClient = WebViewClient()
+            article.url?.let {
+                webView.loadUrl(it)
+            }
+            webView.settings.javaScriptCanOpenWindowsAutomatically = true
+            webView.settings.javaScriptEnabled = true
+            webView.settings.setGeolocationEnabled(true)
+            webView.settings.setSupportZoom(true)
+            webView.settings.setSupportMultipleWindows(true)
         }
 
-        fab.setOnClickListener {
-            viewModel.saveArticle(article)
-            Snackbar.make(view, "Article saved successfully", Snackbar.LENGTH_SHORT).show()
+        handleBackPressed()
+        binding.fab.setOnClickListener {
+            viewModel?.saveArticle(article)
+            Snackbar.make(view, "Article saved to favorites", Snackbar.LENGTH_LONG).show()
         }
+    }
+
+    private fun handleBackPressed() = binding.apply {
+        requireActivity()
+            .onBackPressedDispatcher
+            .addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (webView.canGoBack()) {
+                        webView.goBack()
+                    } else if (webView.canGoForward()) {
+                        webView.goForward()
+                    }
+                    if (isEnabled) {
+                        isEnabled = false
+                        requireActivity().onBackPressed()
+                    }
+                }
+            })
     }
 }

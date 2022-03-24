@@ -10,7 +10,7 @@ class RetrofitInstance {
 
     companion object{
         private val retrofit by lazy {
-            //Log retrofit responses - useful for debugging
+            //Log Retrofit responses - useful for debugging
             val logging = HttpLoggingInterceptor()
             logging.setLevel(HttpLoggingInterceptor.Level.BODY)
             //Use that interceptor to create an okHttpClient
@@ -24,8 +24,8 @@ class RetrofitInstance {
                 .client(client)
                 .build()
         }
-
-        val api by lazy { //Api object usable from anywhere to make our network requests.
+        //Api object usable from anywhere to make our network requests.
+        val newsApi: NewsApi by lazy {
             retrofit.create(NewsApi::class.java)
         }
     }

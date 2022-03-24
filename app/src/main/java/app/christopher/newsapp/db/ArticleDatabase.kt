@@ -17,19 +17,24 @@ abstract class ArticleDatabase : RoomDatabase() {
 
     abstract fun getArticleDao(): ArticleDao
 
-    //Create our actual Database
     companion object {
-        //Create an instance of the Article Database
-        @Volatile //Other Threads can immediately see when a thread changes 'instance' below.
+        /**
+         * Create an instance of the Article Database
+         * Other Threads can immediately see when a thread changes 'instance' below.
+         */
+        @Volatile
         private var instance : ArticleDatabase? = null
 
-        private val LOCK = Any() // makes sure there is only a single instance of our database at once
+        //Ensures there is only a single instance of our database at any time
+        private val LOCK = Any()
         //Called whenever we create an instance of our database
         operator fun invoke(context: Context) = instance ?: synchronized(LOCK) {
-            //No other Threads can access this block of code at the same time.
-            //In other words, we make sure no other Threads alter this 'instance' while we already set it.
-            instance ?: createDatabase(context).also { instance = it }
-
+            /**
+             * No other Threads can access this block of code at the same time.
+             * In other words, we make sure no other Threads alter this 'instance' while we already set it.
+             */
+            instance ?: createDatabase(context).also {
+                instance = it }
         }
         private fun createDatabase(context: Context) =
             Room.databaseBuilder(

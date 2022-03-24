@@ -7,7 +7,7 @@
     <fragment
         android:id="@+id/articleFragment"
         android:name="app.christopher.newsapp.ui.fragments.ArticleFragment"
-        android:label="ArticleFragment" >
+        android:label="Article">
         <argument
             android:name="article"
             app:argType="app.christopher.newsapp.models.Article" />
@@ -15,17 +15,10 @@
     <fragment
         android:id="@+id/breakingNewsFragment"
         android:name="app.christopher.newsapp.ui.fragments.BreakingNewsFragment"
-        android:label="BreakingNewsFragment" >
+        android:label="Top Stories" >
         <action
             android:id="@+id/action_breakingNewsFragment_to_articleFragment"
             app:destination="@id/articleFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
-        <action
-            android:id="@+id/action_breakingNewsFragment_self"
-            app:destination="@id/breakingNewsFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
@@ -34,17 +27,10 @@
     <fragment
         android:id="@+id/savedNewsFragment"
         android:name="app.christopher.newsapp.ui.fragments.SavedNewsFragment"
-        android:label="SavedNewsFragment" >
+        android:label="Favorites" >
         <action
             android:id="@+id/action_savedNewsFragment_to_articleFragment"
             app:destination="@id/articleFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
-        <action
-            android:id="@+id/action_savedNewsFragment_self"
-            app:destination="@id/savedNewsFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
@@ -53,17 +39,10 @@
     <fragment
         android:id="@+id/searchNewsFragment"
         android:name="app.christopher.newsapp.ui.fragments.SearchNewsFragment"
-        android:label="SearchNewsFragment" >
+        android:label="Search" >
         <action
             android:id="@+id/action_searchNewsFragment_to_articleFragment"
             app:destination="@id/articleFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
-        <action
-            android:id="@+id/action_searchNewsFragment_self"
-            app:destination="@id/searchNewsFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"

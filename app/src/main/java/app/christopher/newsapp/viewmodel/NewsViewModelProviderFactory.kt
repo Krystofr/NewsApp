@@ -1,4 +1,4 @@
-package app.christopher.newsapp.ui
+package app.christopher.newsapp.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.ViewModel
@@ -7,7 +7,7 @@ import app.christopher.newsapp.repository.NewsRepository
 
 class NewsViewModelProviderFactory(
     val app: Application,
-    val newsRepository: NewsRepository
+    private val newsRepository: NewsRepository
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return NewsViewModel(newsRepository, app) as T

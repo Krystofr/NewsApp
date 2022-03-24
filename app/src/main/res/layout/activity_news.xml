@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.NewsActivity">
+    tools:context=".ui.NewsActivity"
+    android:id="@+id/news_activity">
 
     <FrameLayout
         android:id="@+id/flFragment"
@@ -13,7 +14,6 @@
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        android:padding="5dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -24,7 +24,6 @@
             android:name="androidx.navigation.fragment.NavHostFragment"
             android:id="@+id/newsNavHostFragment"
             app:navGraph="@navigation/news_nav_graph"/>
-
     </FrameLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

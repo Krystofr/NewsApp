@@ -4,9 +4,9 @@
     <!-- Fade in items -->
     <alpha android:fromAlpha="0"
         android:toAlpha="2"
-        android:duration="800"/>
+        android:duration="400"/>
 
     <translate android:fromXDelta="-100%"
         android:toXDelta="0%"
-        android:duration="800"/>
+        android:duration="400"/>
 </set>

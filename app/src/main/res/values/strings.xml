@@ -1,3 +1,15 @@
 <resources>
-    <string name="app_name">NewsApp</string>
+    <string name="app_name">News Times</string>
+    <string name="save_button">save_button</string>
+    <string name="breaking_news_item">Top Stories</string>
+    <string name="favorites_news_item">Favorites</string>
+    <string name="search_news_item">Search Articles</string>
+    <string name="news_item_image">news_item_image</string>
+    <string name="news_item_source">SOURCE</string>
+    <string name="news_item_title">TITLE</string>
+    <string name="news_item_description">DESCRIPTION</string>
+    <string name="news_item_published_at">PUBLISHED AT</string>
+    <string name="search_articles_hint_text">Search articles…</string>
+    <string name="saved_items_holder_text">Your saved articles will be shown here</string>
+    <string name="holder_image">holder_image</string>
 </resources>

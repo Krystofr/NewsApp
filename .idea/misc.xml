@@ -3,13 +3,24 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/ComposeProjects/NewsApp/app/src/main/res/drawable-v24/ic_all_news.xml" value="0.2526041666666667" />
+        <entry key="..\:/ComposeProjects/NewsApp/app/src/main/res/drawable-v24/ic_breaking_news.xml" value="0.2526041666666667" />
+        <entry key="..\:/ComposeProjects/NewsApp/app/src/main/res/drawable-v24/ic_favorite.xml" value="0.2526041666666667" />
+        <entry key="..\:/ComposeProjects/NewsApp/app/src/main/res/drawable/ic_all_news.xml" value="0.189" />
+        <entry key="..\:/ComposeProjects/NewsApp/app/src/main/res/drawable/ic_favorite.xml" value="0.189" />
+        <entry key="..\:/ComposeProjects/NewsApp/app/src/main/res/drawable/ic_holder_image.xml" value="0.2526041666666667" />
+        <entry key="..\:/ComposeProjects/NewsApp/app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.1945" />
+        <entry key="..\:/ComposeProjects/NewsApp/app/src/main/res/drawable/ic_search.xml" value="0.16145833333333334" />
+        <entry key="..\:/ComposeProjects/NewsApp/app/src/main/res/drawable/ic_top_stories.xml" value="0.2526041666666667" />
         <entry key="..\:/ComposeProjects/NewsApp/app/src/main/res/layout/activity_main.xml" value="0.23645833333333333" />
-        <entry key="..\:/ComposeProjects/NewsApp/app/src/main/res/layout/activity_news.xml" value="0.23645833333333333" />
-        <entry key="..\:/ComposeProjects/NewsApp/app/src/main/res/layout/fragment_article.xml" value="0.23645833333333333" />
+        <entry key="..\:/ComposeProjects/NewsApp/app/src/main/res/layout/activity_news.xml" value="0.2" />
+        <entry key="..\:/ComposeProjects/NewsApp/app/src/main/res/layout/fragment_article.xml" value="0.2" />
         <entry key="..\:/ComposeProjects/NewsApp/app/src/main/res/layout/fragment_breaking_news.xml" value="0.23645833333333333" />
         <entry key="..\:/ComposeProjects/NewsApp/app/src/main/res/layout/fragment_saved_news.xml" value="0.23645833333333333" />
         <entry key="..\:/ComposeProjects/NewsApp/app/src/main/res/layout/fragment_search_news.xml" value="0.264" />
+        <entry key="..\:/ComposeProjects/NewsApp/app/src/main/res/layout/item_article_preview.xml" value="0.264" />
         <entry key="..\:/ComposeProjects/NewsApp/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.23645833333333333" />
+        <entry key="..\:/ComposeProjects/NewsApp/app/src/main/res/menu/menu_item.xml" value="0.23645833333333333" />
       </map>
     </option>
   </component>
