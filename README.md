@@ -6,8 +6,8 @@
 - Retrofit
 - Gson Converter
 - LiveData
-- Coroutines
-- Room persistence
+- KT Coroutines
+- Room persistence library
 - Jetpack Navigation Component
 - MVVM
 - BottomNavigation
