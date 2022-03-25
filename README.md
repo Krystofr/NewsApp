@@ -3,7 +3,7 @@
 ## Technologies Used:
 
 - Kotlin
-- Retrofit
+- Retrofit + GsonConverterFactory + OKHttp
 - Gson Converter
 - LiveData
 - KT Coroutines
