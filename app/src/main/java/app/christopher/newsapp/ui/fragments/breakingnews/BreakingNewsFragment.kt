@@ -1,77 +1,77 @@
-package app.christopher.newsapp.ui.fragments
+package app.christopher.newsapp.ui.fragments.breakingnews
 
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.AbsListView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import app.christopher.newsapp.R
 import app.christopher.newsapp.adapters.NewsAdapter
-import app.christopher.newsapp.ui.NewsActivity
-import app.christopher.newsapp.ui.NewsViewModel
+import app.christopher.newsapp.databinding.FragmentBreakingNewsBinding
 import app.christopher.newsapp.util.Constants.Companion.QUERY_PAGE_SIZE
 import app.christopher.newsapp.util.Resource
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.android.synthetic.main.fragment_breaking_news.*
 
 private const val TAG = "BreakingNewsFragment"
 
-class BreakingNewsFragment : Fragment(R.layout.fragment_breaking_news) {
+class BreakingNewsFragment : Fragment() {
 
-    lateinit var viewModel: NewsViewModel
-    lateinit var newsAdapter: NewsAdapter
+    private val viewModel: BreakingNewsViewModel by activityViewModels()
+    private lateinit var binding : FragmentBreakingNewsBinding
+    private lateinit var newsAdapter: NewsAdapter
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentBreakingNewsBinding.inflate(layoutInflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        breakingNewsRL.apply {
-            setOnRefreshListener {
-                swipeRefreshLayout()
-            }
-        }
-
-        viewModel =
-            (activity as NewsActivity).viewModel //Cast to NewsActivity so we have access to the ViewModel created in it by calling ".viewModel"
+        getBreakingNews()
+        setUpSwipeRefresh()
         setUpRecyclerView()
 
+    }
 
-        newsAdapter.setOnItemClickListener {
-            val bundle = Bundle().apply {
-                putSerializable("article", it)
-            }
-            findNavController().navigate(R.id.action_breakingNewsFragment_to_articleFragment,
-                bundle)
-        }
-
+    private fun getBreakingNews() = binding.apply{
         //So here, we are subscribing to all changes that will be made in the LiveData observable
-        viewModel.breakingNews.observe(viewLifecycleOwner, { response ->
+        viewModel.breakingNews.observe(viewLifecycleOwner) { response ->
             //Depending on the state of the response, we want to handle each differently (success or error)
             when (response) {
                 is Resource.Success -> {
                     hideProgressbar()
+                    swipeContainer.isRefreshing = false
                     response.data?.let { newsResponse ->
-                        newsAdapter.differ.submitList(newsResponse.articles.toList()) //The "newsResponse.article" here did not load more items into the list when scrolling. Calling ".toList()" fixed this.
-                        val totalPages = newsResponse.totalResults / QUERY_PAGE_SIZE + 2 //totalResults is an integer in the JSON that tells us how many results we have in our response.
-                        isLastPage = viewModel.breakingNewsPage == totalPages
+                        if (newsResponse.articles.isNotEmpty()) {
+                            newsAdapter.differ.submitList(newsResponse.articles.toList()) //The "newsResponse.article" here did not load more items into the list when scrolling. Calling ".toList()" fixed this.
+                            val totalPages =
+                                newsResponse.totalResults / QUERY_PAGE_SIZE + 2 //totalResults is an integer in the JSON that tells us how many results we have in our response.
+                            isLastPage = viewModel.breakingNewsPage == totalPages
+                        } else Toast.makeText(activity, "An error occurred", Toast.LENGTH_SHORT).show()
                         if (isLastPage) {
-                            rvBreakingNews.setPadding(0, 0, 0, 0)
+                            binding.rvBreakingNews.setPadding(0, 0, 0, 0)
                         }
                     }
                 }
                 is Resource.Error -> {
                     hideProgressbar()
+                    swipeContainer.isRefreshing = false
                     response.message?.let { message ->
                         Log.e(TAG, "An error occurred: $message")
                         //Toast.makeText(activity, "An error occurred: $message", Toast.LENGTH_SHORT).show()
                         MaterialAlertDialogBuilder(requireContext())
-                            .setTitle("Well, this is awkward:")
+                            .setTitle("Error!")
                             .setMessage(message)
-                            .setPositiveButton("TRY AGAIN") { _, _ ->
-                               swipeRefreshLayout()
+                            .setPositiveButton("okay") { _, _ ->
                             }.setNegativeButton("CANCEL") { cancel, _ ->
                                 cancel.dismiss()
                             }
@@ -80,28 +80,28 @@ class BreakingNewsFragment : Fragment(R.layout.fragment_breaking_news) {
                 }
                 is Resource.Loading -> {
                     showProgressbar()
+                    swipeContainer.isRefreshing = true
                 }
             }
 
-        })
+        }
     }
 
-    private fun hideProgressbar() {
+    private fun hideProgressbar() = binding.apply {
         paginationProgressBar.visibility = View.INVISIBLE
         isLoading = false
     }
 
-    private fun showProgressbar() {
+    private fun showProgressbar() = binding.apply {
         paginationProgressBar.visibility = View.VISIBLE
         isLoading = true
     }
 
-    private fun setUpRecyclerView() {
-        newsAdapter = NewsAdapter()
+    private fun setUpRecyclerView() = binding.apply{
+        newsAdapter = NewsAdapter(requireContext())
         rvBreakingNews.apply {
             adapter = newsAdapter
             layoutManager = LinearLayoutManager(activity)
-            addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
             addOnScrollListener(this@BreakingNewsFragment.scrollListener)
         }
     }
@@ -111,7 +111,7 @@ class BreakingNewsFragment : Fragment(R.layout.fragment_breaking_news) {
 
     var isScrolling = false
 
-    val scrollListener = object : RecyclerView.OnScrollListener() {
+    private val scrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             super.onScrollStateChanged(recyclerView, newState)
             //If we are scrolling
@@ -136,20 +136,37 @@ class BreakingNewsFragment : Fragment(R.layout.fragment_breaking_news) {
             val isTotalMoreThanVisible =
                 totalItemCount >= QUERY_PAGE_SIZE //Determine each page of our request is 20 items
 
-            //Now, we set pagination to our recyclerview of items.
+            //Now, we set pagination to our recyclerview items.
             val shouldPaginate =
                 isNotLoadingAndNotAtLastPage and isAtLastItem and isNotAtBeginning and isTotalMoreThanVisible and isScrolling
             if (shouldPaginate) {
-                viewModel.getBreakingNews("uk")
+                viewModel.getBreakingNews("gb")
                 isScrolling = false
             }
         }
     }
 
-    private fun swipeRefreshLayout() {
-        findNavController().navigate(R.id.action_breakingNewsFragment_self)
-        Toast.makeText(activity, "Refreshed", Toast.LENGTH_SHORT).show()
-        activity?.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-        activity?.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+    private fun setUpSwipeRefresh() = binding.apply {
+        swipeContainer.apply {
+            setOnRefreshListener {
+                isRefreshing = true
+                getBreakingNews()
+            }
+            setColorSchemeResources(
+                android.R.color.holo_purple,
+                android.R.color.holo_orange_dark,
+                android.R.color.holo_red_dark,
+                android.R.color.holo_green_light)
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        binding.swipeContainer.isRefreshing = true
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.swipeContainer.isRefreshing = false
     }
 }

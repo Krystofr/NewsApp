@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/articleFragment"
-        android:name="app.christopher.newsapp.ui.fragments.ArticleFragment"
+        android:name="app.christopher.newsapp.ui.fragments.ArticleActivity"
         android:label="ArticleFragment" >
         <argument
             android:name="article"
@@ -14,7 +14,7 @@
     </fragment>
     <fragment
         android:id="@+id/breakingNewsFragment"
-        android:name="app.christopher.newsapp.ui.fragments.BreakingNewsFragment"
+        android:name="app.christopher.newsapp.ui.fragments.breakingnews.BreakingNewsFragment"
         android:label="BreakingNewsFragment" >
         <action
             android:id="@+id/action_breakingNewsFragment_to_articleFragment"
@@ -32,28 +32,9 @@
             app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
     <fragment
-        android:id="@+id/savedNewsFragment"
-        android:name="app.christopher.newsapp.ui.fragments.SavedNewsFragment"
-        android:label="SavedNewsFragment" >
-        <action
-            android:id="@+id/action_savedNewsFragment_to_articleFragment"
-            app:destination="@id/articleFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
-        <action
-            android:id="@+id/action_savedNewsFragment_self"
-            app:destination="@id/savedNewsFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
-    </fragment>
-    <fragment
         android:id="@+id/searchNewsFragment"
-        android:name="app.christopher.newsapp.ui.fragments.SearchNewsFragment"
-        android:label="SearchNewsFragment" >
+        android:name="app.christopher.newsapp.ui.fragments.searchnews.SearchNewsFragment"
+        android:label="SearchNewsFragment">
         <action
             android:id="@+id/action_searchNewsFragment_to_articleFragment"
             app:destination="@id/articleFragment"

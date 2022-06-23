@@ -25,7 +25,7 @@ class RetrofitInstance {
                 .build()
         }
 
-        val api by lazy { //Api object usable from anywhere to make our network requests.
+        val newsApi: NewsApi by lazy { //Api object usable from anywhere to make our network requests.
             retrofit.create(NewsApi::class.java)
         }
     }
