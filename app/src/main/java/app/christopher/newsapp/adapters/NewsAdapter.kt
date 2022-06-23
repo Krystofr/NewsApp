@@ -62,10 +62,6 @@ class NewsAdapter(val context: Context) : RecyclerView.Adapter<NewsAdapter.Artic
 
     private var onItemClickListener: ((Article) -> Unit)? = null
 
-    fun setOnItemClickListener(listener: (Article) -> Unit) {
-        onItemClickListener = listener
-    }
-
     override fun getItemCount() = differ.currentList.size
 
 }

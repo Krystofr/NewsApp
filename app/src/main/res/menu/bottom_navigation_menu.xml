@@ -3,7 +3,7 @@
 
     <item android:id="@+id/breakingNewsFragment"
         android:title="@string/news_feed"
-        android:icon="@drawable/ic_breaking_news"/>
+        android:icon="@drawable/ic_feed"/>
     <item android:id="@+id/searchNewsFragment"
         android:title="@string/search_news_item"
         android:icon="@drawable/ic_search"/>

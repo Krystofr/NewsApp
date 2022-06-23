@@ -16,6 +16,7 @@ object AppModule {
 
 
     @Provides
+    @Singleton
     fun provideRetrofit() : Retrofit =
         Retrofit.Builder()
             .baseUrl(Constants.BASE_URL)
@@ -23,6 +24,7 @@ object AppModule {
             .build()
 
     @Provides
+    @Singleton
     fun provideNewsApi(retrofit: Retrofit): NewsApi =
         retrofit.create(NewsApi::class.java)
 }
