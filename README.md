@@ -11,4 +11,5 @@
 - MVVM architecture
 - BottomNavigation
 - API from: newsapi.org
+- Clean architecture
 - Dependency Injection (Dagger-hilt)
